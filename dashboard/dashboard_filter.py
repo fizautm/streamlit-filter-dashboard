@@ -31,16 +31,32 @@ product = st.sidebar.selectbox(
 if product != "All":
     df = df[df["product"] == product]
 
+# Units sold filter
+if not df.empty:
+
+min_units = int(df["units_sold"].min())
+max_units = int(df["units_sold"].max())
+
+if min_units == max_units:
+
+st.sidebar.info(
+f"Only one units_sold value available: {min_units}"
+)
+
+units_range = (min_units, max_units)
+
+else:
+
 units_range = st.sidebar.slider(
-    "Units Sold",
-    int(df["units_sold"].min()),
-    int(df["units_sold"].max()),
-    value=(int(df["units_sold"].min()), int(df["units_sold"].max()))
+"Units Sold",
+min_units,
+max_units,
+value=(min_units, max_units)
 )
 
 df = df[
-    (df["units_sold"] >= units_range[0]) &
-    (df["units_sold"] <= units_range[1])
+(df["units_sold"] >= units_range[0]) &
+(df["units_sold"] <= units_range[1])
 ]
 
 search_term = st.sidebar.text_input("Search Product Name")
